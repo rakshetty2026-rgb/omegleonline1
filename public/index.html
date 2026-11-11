@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>OmegleOnline – Talk to Strangers</title>
+<meta name="description" content="Video & text chat with random strangers. Free, anonymous, skip anytime.">
+<style>
+:root{--bg:#fff;--card:#f3f7fd;--bd:#d9e4f4;--fg:#16253b;--mut:#66758c;--b1:#42a5f5;--b2:#1565c0;--g:linear-gradient(135deg,var(--b1),var(--b2))}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{background:linear-gradient(180deg,#e8f2ff,#fff 45%);color:var(--fg);font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;display:flex;flex-direction:column;overflow:hidden}
+header,#home,#chat{position:relative;z-index:1}
+header{display:flex;justify-content:space-between;align-items:center;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;background:#fff;border-bottom:1px solid var(--bd)}
+.logo{font-weight:900;font-size:26px;letter-spacing:-.8px;color:var(--b2)}.logo b{color:var(--b1)}
+.pill{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--bd);padding:7px 14px;border-radius:99px;font-size:13px;font-weight:600;color:var(--b2)}
+.dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 0 #22c55e;animation:p 1.6s infinite}@keyframes p{70%{box-shadow:0 0 0 8px transparent}}
+button{font:inherit;cursor:pointer;border:0;color:#fff;font-weight:700;border-radius:14px;transition:transform .12s,filter .2s}
+button:active{transform:scale(.95)}button:hover{filter:brightness(1.06)}button:disabled{opacity:.4;cursor:not-allowed;animation:none!important}
+.pri{background:var(--g);box-shadow:0 8px 22px rgba(21,101,192,.3)}.sec{background:#fff;color:var(--b2);border:1.5px solid var(--bd)}
+/* HOME */
+#home{flex:1;overflow:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:12px 20px calc(24px + env(safe-area-inset-bottom))}
+.live{display:inline-flex;gap:8px;align-items:center;background:#fff;border:1px solid var(--bd);padding:6px 14px;border-radius:99px;font-size:13px;margin-bottom:18px;color:var(--mut);box-shadow:0 2px 10px rgba(21,101,192,.08)}
+#home h1{font-size:clamp(38px,10vw,64px);line-height:1.05;margin:0 0 14px;letter-spacing:-2px;font-weight:900;color:var(--b2)}
+#home h1 span{color:var(--b1)}
+.sub{color:var(--mut);max-width:440px;margin:0 auto 22px;font-size:17px}
+.feats{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:24px}
+.feats span{background:#fff;border:1px solid var(--bd);padding:8px 14px;border-radius:99px;font-size:13px;font-weight:600;color:var(--b2)}
+.age{display:flex;gap:12px;align-items:flex-start;text-align:left;max-width:440px;font-size:13px;color:var(--mut);background:#fff;border:1px solid var(--bd);padding:14px;border-radius:16px;box-shadow:0 4px 16px rgba(21,101,192,.07)}
+.age input{width:22px;height:22px;margin:0;accent-color:var(--b2);flex:none}.age a{color:var(--b2);font-weight:600}
+.btns{display:flex;flex-direction:column;gap:12px;width:100%;max-width:440px;margin-top:20px}
+.btns button{padding:19px;font-size:19px;border-radius:18px}#bv:not(:disabled){animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(21,101,192,.45)}70%{box-shadow:0 0 0 16px transparent}}
+/* CHAT */
+#chat{display:none;flex:1;min-height:0;gap:12px;padding:12px 12px calc(12px + env(safe-area-inset-bottom))}
+#chat.on{display:flex}
+#vids{position:relative;flex:1;min-width:0;background:#0b1626;border-radius:20px;overflow:hidden;border:1px solid var(--bd)}
+#remote{width:100%;height:100%;object-fit:cover;background:#0b1626}
+#local{position:absolute;left:12px;top:12px;width:24%;max-width:130px;aspect-ratio:3/4;object-fit:cover;border-radius:14px;border:2px solid #fff;background:#111;transform:scaleX(-1);box-shadow:0 6px 18px rgba(0,0,0,.4)}
+#status{position:absolute;inset:0;display:flex;flex-direction:column;gap:16px;align-items:center;justify-content:center;background:radial-gradient(circle,rgba(30,110,200,.6),rgba(8,20,40,.95));color:#fff;text-align:center;padding:20px;font-weight:600}
+.spin{width:52px;height:52px;border-radius:50%;border:5px solid rgba(255,255,255,.2);border-top-color:#fff;animation:s 1s linear infinite}@keyframes s{to{transform:rotate(360deg)}}
+.tog{position:absolute;top:12px;right:12px;display:flex;gap:8px;z-index:2}
+.tog button{width:44px;height:44px;padding:0;border-radius:50%;background:rgba(255,255,255,.9);font-size:18px;box-shadow:0 2px 10px rgba(0,0,0,.3)}.tog .off{background:#ef4444}
+#side{width:390px;display:flex;flex-direction:column;background:#fff;border:1px solid var(--bd);border-radius:20px;min-height:0;overflow:hidden;box-shadow:0 8px 30px rgba(21,101,192,.1)}
+#log{flex:1;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:7px;-webkit-overflow-scrolling:touch}
+.m{padding:10px 14px;border-radius:18px;max-width:84%;word-wrap:break-word;overflow-wrap:anywhere;animation:pop .2s ease-out}
+@keyframes pop{from{transform:scale(.85) translateY(8px);opacity:0}}
+.me{background:var(--g);color:#fff;align-self:flex-end;border-bottom-right-radius:5px}.st{background:#eaf1fb;color:var(--fg);align-self:flex-start;border-bottom-left-radius:5px}
+.sys{color:var(--mut);font-size:13px;text-align:center;align-self:center;padding:4px 12px}
+#typ{height:18px;padding:0 16px;font-size:12px;color:var(--mut)}
+#quick{display:flex;gap:6px;padding:0 10px 6px}#quick button{flex:1;padding:6px;font-size:18px;background:var(--card);border-radius:12px}
+#bar{display:flex;gap:8px;padding:4px 10px 8px}
+#msg{flex:1;min-width:0;background:var(--card);border:1.5px solid var(--bd);color:var(--fg);border-radius:14px;padding:13px 16px;font-size:16px;outline:0}
+#msg::placeholder{color:#8fa0b8}#msg:focus{border-color:var(--b1);background:#fff}#send{width:50px;font-size:18px}
+#ctl{display:flex;gap:8px;padding:0 10px 10px}
+#ctl button{padding:13px 16px;font-size:15px}#skip{flex:1;font-size:18px!important;padding:15px!important;border-radius:16px}
+.text #vids{display:none}.text #side{width:100%;max-width:780px;margin:0 auto}
+/* MOBILE: chat floats over the live video */
+@media(max-width:800px){
+ #chat{padding:0}
+ #chat:not(.text) #vids{position:absolute;inset:0;border-radius:0;border:0}
+ #chat:not(.text) #side{position:absolute;left:0;right:0;bottom:0;width:100%;flex:none;background:linear-gradient(transparent,rgba(5,15,35,.85) 45%);border:0;border-radius:0;box-shadow:none;padding-bottom:env(safe-area-inset-bottom);pointer-events:none}
+ #chat:not(.text) #side>*{pointer-events:auto}
+ #chat:not(.text) #log{flex:none;max-height:32vh;padding-top:30px;-webkit-mask-image:linear-gradient(transparent,#000 30%);mask-image:linear-gradient(transparent,#000 30%)}
+ #chat:not(.text) .st{background:rgba(255,255,255,.93)}
+ #chat:not(.text) .sys{color:#fff;background:rgba(0,0,0,.4);border-radius:99px}
+ #chat:not(.text) #typ{color:#dbe8fb}
+ #chat:not(.text) #quick button,#chat:not(.text) #ctl .sec{background:rgba(255,255,255,.22);color:#fff;border:0}
+ #chat:not(.text) #msg{background:rgba(255,255,255,.95)}
+ #chat.text{padding:8px 8px calc(8px + env(safe-area-inset-bottom))}
+ #local{width:26%}
+}
+</style></head><body>
+<header><div class="logo">omegle<b>online</b></div><div class="pill"><i class="dot"></i><span id="count">0</span> online</div></header>
+
+<section id="home">
+  <div class="live">🟢 Strangers are chatting right now</div>
+  <h1>Talk to <span>strangers</span></h1>
+  <p class="sub">Video or text chat with someone random. Free, anonymous, no signup. Not feeling it? Skip in one tap.</p>
+  <div class="feats"><span>🔒 Anonymous</span><span>⚡ Instant match</span><span>⏭ Skip anytime</span><span>💬 Chat while on video</span></div>
+  <label class="age"><input type="checkbox" id="age"><span>I am <b>18 or older</b> and agree to the <a href="#" id="rules">rules</a>: no nudity, harassment or illegal content. Abusive users can be reported and banned.</span></label>
+  <div class="btns"><button id="bv" class="pri" disabled>📹 Start Video Chat</button><button id="bt" class="sec" disabled>💬 Start Text Chat</button></div>
+</section>
+
+<section id="chat">
+  <div id="vids">
+    <video id="remote" autoplay playsinline></video><video id="local" autoplay playsinline muted></video>
+    <div class="tog"><button id="tmic" title="Mute">🎤</button><button id="tcam" title="Camera">📷</button></div>
+    <div id="status"><div class="spin"></div><div id="stxt">Connecting…</div></div>
+  </div>
+  <div id="side">
+    <div id="log"></div><div id="typ"></div>
+    <div id="quick"><button class="q">👋</button><button class="q">😂</button><button class="q">👍</button><button class="q">❤️</button><button class="q">😮</button></div>
+    <div id="bar"><input id="msg" placeholder="Say something…" maxlength="500" autocomplete="off" enterkeyhint="send"><button id="send" class="pri">➤</button></div>
+    <div id="ctl"><button id="stop" class="sec">✕</button><button id="skip" class="pri">Skip ⏭</button><button id="rep" class="sec">⚑</button></div>
+  </div>
+</section>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+const $=s=>document.querySelector(s);
+let socket,pc,local,mode,cfg,chain=Promise.resolve(),typTimer,lastTyp=0,matched=false;
+const log=$('#log');
+function add(t,c){const d=document.createElement('div');d.className='m '+c;d.textContent=t;log.appendChild(d);log.scrollTop=log.scrollHeight}
+function status(t,spin=true){const s=$('#status');$('#stxt').textContent=t||'';s.querySelector('.spin').style.display=spin?'block':'none';s.style.display=t?'flex':'none';if(mode==='text')s.style.display='none'}
+$('#age').onchange=e=>{$('#bv').disabled=$('#bt').disabled=!e.target.checked};
+$('#rules').onclick=e=>{e.preventDefault();alert('Rules:\n• You must be 18+\n• No nudity or sexual content\n• No harassment, hate or threats\n• No illegal content\nViolations lead to a ban.')};
+$('#bv').onclick=()=>start('video');$('#bt').onclick=()=>start('text');
+
+async function start(m){
+  mode=m;
+  try{cfg=await (await fetch('/config')).json()}catch(e){cfg={iceServers:[{urls:'stun:stun.l.google.com:19302'}]}}
+  if(m==='video'){
+    try{local=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true});$('#local').srcObject=local}
+    catch(e){return alert('Could not access camera/mic ('+e.name+'). Allow permissions in your browser, make sure the site uses HTTPS, or try Text Chat.')}
+  }else{$('#chat').classList.add('text');document.querySelector('.tog').style.display='none'}
+  $('#home').style.display='none';$('#chat').classList.add('on');
+  socket=io();
+  socket.on('count',n=>$('#count').textContent=n);
+  socket.on('waiting',()=>{matched=false;closePC();log.innerHTML='';add('Looking for someone to chat with…','sys');status('Looking for someone…')});
+  socket.on('matched',({initiator})=>{matched=true;log.innerHTML='';add('Connected! Say hi 👋','sys');status('');makePC(initiator);$('#msg').focus()});
+  socket.on('signal',d=>{chain=chain.then(()=>onSignal(d)).catch(console.error)});
+  socket.on('msg',t=>{add(t,'st');$('#typ').textContent=''});
+  socket.on('typing',()=>{$('#typ').textContent='Stranger is typing…';clearTimeout(typTimer);typTimer=setTimeout(()=>$('#typ').textContent='',1500)});
+  socket.on('partner-left',()=>{matched=false;closePC();add('Stranger disconnected. Tap Skip to find someone new.','sys');status('Stranger left. Tap Skip ⏭',false)});
+  socket.on('banned',()=>{alert('You have been temporarily banned due to reports.');location.reload()});
+  socket.on('connect',()=>socket.emit('find',mode));
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')skip()});
+}
+function closePC(){if(pc){pc.close();pc=null}$('#remote').srcObject=null}
+function makePC(initiator){
+  closePC();chain=Promise.resolve();
+  if(mode!=='video')return;
+  pc=new RTCPeerConnection(cfg);
+  local.getTracks().forEach(t=>pc.addTrack(t,local));
+  pc.ontrack=e=>{$('#remote').srcObject=e.streams[0]};
+  pc.onicecandidate=e=>{if(e.candidate)socket.emit('signal',{candidate:e.candidate})};
+  pc.onconnectionstatechange=()=>{if(pc&&pc.connectionState==='failed')status('Connection failed. Tap Skip ⏭',false)};
+  if(initiator)pc.createOffer().then(o=>pc.setLocalDescription(o)).then(()=>socket.emit('signal',{sdp:pc.localDescription}));
+}
+async function onSignal({sdp,candidate}){
+  if(!pc)return;
+  if(sdp){await pc.setRemoteDescription(sdp);if(sdp.type==='offer'){await pc.setLocalDescription(await pc.createAnswer());socket.emit('signal',{sdp:pc.localDescription})}}
+  else if(candidate){await pc.addIceCandidate(candidate)}
+}
+function send(){const t=$('#msg').value.trim();if(!t||!matched)return;socket.emit('msg',t);add(t,'me');$('#msg').value=''}
+function skip(){if(!socket)return;closePC();log.innerHTML='';$('#typ').textContent='';matched=false;status('Looking for someone…');add('Looking for someone to chat with…','sys');socket.emit('find',mode)}
+$('#send').onclick=send;
+document.querySelectorAll('.q').forEach(b=>b.onclick=()=>{$('#msg').value=b.textContent;send()});
+$('#msg').onkeydown=e=>{if(e.key==='Enter')send();else if(matched&&Date.now()-lastTyp>1000){lastTyp=Date.now();socket.emit('typing')}};
+$('#skip').onclick=skip;
+$('#rep').onclick=()=>{if(!matched)return;if(confirm('Report this user and move on?')){socket.emit('report');skip()}};
+$('#stop').onclick=()=>{if(local)local.getTracks().forEach(t=>t.stop());if(socket)socket.disconnect();location.reload()};
+function tog(btn,kind){btn.onclick=()=>{if(!local)return;const t=kind==='audio'?local.getAudioTracks()[0]:local.getVideoTracks()[0];if(!t)return;t.enabled=!t.enabled;btn.classList.toggle('off',!t.enabled)}}
+tog($('#tmic'),'audio');tog($('#tcam'),'video');
+</script>
+</body></html>
